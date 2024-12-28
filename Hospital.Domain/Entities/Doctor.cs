@@ -16,6 +16,4 @@ public class Doctor
 
     [MaxLength(100)]
     public string? Phone { get; set; }
-
-    //list of notes 
 }

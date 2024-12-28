@@ -24,5 +24,5 @@ public class Patient
     [MaxLength(100)]
     public string Password { get; set; }
 
-    public List<Notes>? Notes { get; set; }
+    public ICollection<Note>? Notes { get; set; }
 }

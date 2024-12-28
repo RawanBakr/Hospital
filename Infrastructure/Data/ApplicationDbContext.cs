@@ -15,7 +15,7 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<Doctor> Doctors { get; set; }
-    public DbSet<Notes> Notes { get; set; }
+    public DbSet<Note> Notes { get; set; }
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Receptionist> Receptionists { get; set; }
 
@@ -30,10 +30,11 @@ public class ApplicationDbContext : DbContext
             x.Property(m => m.Phone).HasMaxLength(100);
             });
 
-        modelBuilder.Entity<Notes>(x => {
+        modelBuilder.Entity<Note>(x => {
             x.ToTable("Notes");
             x.Property(e => e.Id).HasDefaultValueSql("NEWID()");
             x.Property(m => m.Mediciness).HasMaxLength(500);
+            x.HasOne<Patient>(p=>p.Patient).WithMany(n=>n.Notes).HasForeignKey(e=>e.PatientId);
             
         });
 
@@ -43,7 +44,7 @@ public class ApplicationDbContext : DbContext
             x.Property(m => m.Name).HasMaxLength(100);
             x.Property(m=>m.UserName).HasMaxLength(100);
             x.Property(m=>m.Password).HasMaxLength(100);
-            x.HasMany<Notes>().WithOne().HasForeignKey(m => m.PatientId);
+            x.HasMany<Note>(n=>n.Notes).WithOne(p=>p.Patient).HasForeignKey(m => m.PatientId).OnDelete(DeleteBehavior.Cascade); ;
         });
 
         modelBuilder.Entity<Receptionist>().HasData(

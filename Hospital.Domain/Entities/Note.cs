@@ -7,17 +7,15 @@ using System.Threading.Tasks;
 
 namespace Hospital.Domain.Entities;
 
-public class Notes
+public class Note
 {
     public Guid Id { get; set; }
 
     [MaxLength(500)]
     public string Mediciness { get; set; }
-    
+
     public DateTime Date { get; set; } = DateTime.Now;
 
-    public int PatientId { get; set; }
+    public Guid PatientId { get; set; }
     public Patient Patient { get; set; }
-
-    //object of patient   select one patient 
 }
