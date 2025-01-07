@@ -34,7 +34,7 @@ public class ApplicationDbContext : DbContext
             x.ToTable("Notes");
             x.Property(e => e.Id).HasDefaultValueSql("NEWID()");
             x.Property(m => m.Mediciness).HasMaxLength(500);
-            x.HasOne<Patient>(p=>p.Patient).WithMany(n=>n.Notes).HasForeignKey(e=>e.PatientId);
+            x.HasOne<Patient>(p=>p.Patient).WithMany(n=>n.Notes).HasForeignKey(e=>e.PatientId).OnDelete(DeleteBehavior.NoAction);
             
         });
 
@@ -44,7 +44,7 @@ public class ApplicationDbContext : DbContext
             x.Property(m => m.Name).HasMaxLength(100);
             x.Property(m=>m.UserName).HasMaxLength(100);
             x.Property(m=>m.Password).HasMaxLength(100);
-            x.HasMany<Note>(n=>n.Notes).WithOne(p=>p.Patient).HasForeignKey(m => m.PatientId).OnDelete(DeleteBehavior.Cascade); ;
+            x.HasMany<Note>(n=>n.Notes).WithOne(p=>p.Patient).HasForeignKey(m => m.PatientId).OnDelete(DeleteBehavior.NoAction);
         });
 
         modelBuilder.Entity<Receptionist>().HasData(
