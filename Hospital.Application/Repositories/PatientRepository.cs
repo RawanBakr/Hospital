@@ -25,7 +25,7 @@ public class PatientRepository : IPatientRepository
     public async Task AddAsync(Patient patient)
     {
         await _context.Patients.AddAsync(patient);
-         Save();
+         SaveAsync();
     }
 
     public async Task DeleteAsync(int id)
@@ -40,7 +40,10 @@ public class PatientRepository : IPatientRepository
 
     public async Task<IEnumerable<Patient>> GetAllAsync()
     {
-        return await _context.Patients.ToListAsync();
+        return await _context.Patients.OrderBy(e=>e.Name).ToListAsync();
+
+        //IQueryable<Patient> queryable = _context.Patients.Include(e => new { e.Name, e.Gender }).OrderBy(e => e.Id);
+        //return await queryable.ToListAsync();
     }
 
     public async Task<Patient> GetByIdAsync(Guid id)
@@ -55,12 +58,11 @@ public class PatientRepository : IPatientRepository
         await _context.SaveChangesAsync();
     }
 
-    public void Save()
+    public Task SaveAsync()
     {
         _context.SaveChanges();
+        return Task.CompletedTask;
     }
-
-
 
 
     //public IEnumerable<Patient> GetStaticPatients()

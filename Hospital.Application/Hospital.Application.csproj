@@ -27,4 +27,8 @@
     <ProjectReference Include="..\Infrastructure\Hospital.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitofWork\" />
+  </ItemGroup>
+
 </Project>

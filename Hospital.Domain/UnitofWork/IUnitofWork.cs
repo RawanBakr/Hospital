@@ -7,10 +7,8 @@
 
 //namespace Hospital.Domain.UnitofWork;
 
-//public interface IUnitofWork : IDisposable
+//public interface IUnitofWork :IDisposable
 //{
 //    IPatientRepository Patients { get; }
-//    //IDoctorRepository Doctors { get; }
-//    //IAppointmentRepository Appointments { get; }
 //    Task CompleteAsync();
 //}

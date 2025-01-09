@@ -9,4 +9,5 @@ namespace Hospital.Domain.Repositories;
 
 public interface IPatientRepository : IRepository<Patient>
 {
+
 }

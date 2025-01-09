@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Hospital.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Hospital.Domain.Entities;
+namespace Hospital.Web.DTOs.Patient;
 
-public class Patient
+public class PatientDTO
 {
     public Guid Id { get; set; }
 
@@ -22,8 +18,4 @@ public class Patient
 
     [MaxLength(100)]
     public string Password { get; set; }
-
-    //public DateTime DateCreated { get; set; }
-
-    public ICollection<Note>? Notes { get; set; }
 }

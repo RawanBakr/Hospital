@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hospital.Domain.Entities.Patient>
+﻿@model IEnumerable<Hospital.Web.DTOs.Patient.PatientDTO>
 
 @{
     ViewData["Title"] = "Patients List";
@@ -18,7 +18,6 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Name</th>
                 <th>Gender</th>
                 <th>UserName</th>
@@ -29,7 +28,6 @@
             @foreach (var patient in Model)
             {
                 <tr>
-                    <td>@patient.Id</td>
                     <td>@patient.Name</td>
                     <td>@patient.Gender</td>
                     <td>@patient.UserName</td>
