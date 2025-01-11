@@ -1,20 +1,11 @@
 ﻿using Hospital.Application.Contracts.Patients;
 using Hospital.Application.Patients;
-using Hospital.Application.Repositories;
-using Hospital.Domain.Entities;
-using Hospital.Domain.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Data;
-using System.Net;
 
 namespace Hospital.Web.Controllers;
 
-
 public class PatientController : Controller
 {
-
     private readonly IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> _patientAppService;
 
     public PatientController(IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> patientAppService)
@@ -29,7 +20,6 @@ public class PatientController : Controller
         var patientList = await _patientAppService.GetPatientList(patientDTO);
         return View(patientList);
     }
-
 
     [HttpGet]
     public IActionResult Create()
