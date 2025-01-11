@@ -1,7 +1,11 @@
-﻿using Hospital.Domain.Entities;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Hospital.Web.DTOs.Patient;
+namespace Hospital.Application.Contracts.Patients;
 
 public class PatientDTO
 {

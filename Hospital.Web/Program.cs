@@ -1,5 +1,6 @@
 using Hospital.Application.Repositories;
 using Hospital.Domain.Repositories;
+using Hospital.Application.Contracts;
 using Hospital.Infrastructure;
 using Hospital.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,8 @@ using Microsoft.OpenApi.Models;
 using Hospital.Infrastructure;
 using NuGet.Protocol.Core.Types;
 using Octokit;
+using Hospital.Application.Patients;
+using Hospital.Application.Contracts.Patients;
 
 namespace Hospital.Web
 {
@@ -29,17 +32,16 @@ namespace Hospital.Web
 
             builder.Services.AddScoped<ApplicationDbContext>();
 
-            //builder.Services.AddScoped(typeof(IRepository<>), typeof(IRepository<>));
-
-            // Register the specific patient repository
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+            builder.Services.AddScoped<IPatientAppService<PatientDTO,Guid,CreateUpdatePatientDTO>, PatientAppService>();
+
             builder.Services.AddResponseCompression();
 
             //add swagger
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v2", new OpenApiInfo { Title = "MVCCallWebAPI", Version = "v2" });
-            });
+            //builder.Services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v2", new OpenApiInfo { Title = "MVCCallWebAPI", Version = "v2" });
+            //});
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -50,11 +52,11 @@ namespace Hospital.Web
                 app.UseHsts();
             }
             //add swagger
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v2/swagger.json", "MVCCallWebAPI");
-            });
+            //app.UseSwagger();
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v2/swagger.json", "MVCCallWebAPI");
+            //});
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

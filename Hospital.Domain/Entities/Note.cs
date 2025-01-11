@@ -11,7 +11,6 @@ public class Note
 {
     public Guid Id { get; set; }
 
-    [MaxLength(500)]
     public string Mediciness { get; set; }
 
     public DateTime Date { get; set; } = DateTime.Now;

@@ -12,6 +12,5 @@ public class Receptionist
 {
     public int Id { get; set; }
 
-    [MaxLength(100)]
     public string Emaill { get; set; }
 }
