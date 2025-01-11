@@ -48,8 +48,7 @@ public class PatientRepository : IPatientRepository
 
     public async Task<Patient> GetByIdAsync(Guid id)
     {
-       return await _context.Patients.FirstOrDefaultAsync(e=>e.Id ==id);
-     
+       return await _context.Patients.FindAsync(id);
     }
 
     public async Task UpdateAsync(Patient patient)
@@ -64,57 +63,8 @@ public class PatientRepository : IPatientRepository
         return Task.CompletedTask;
     }
 
-
-    //public IEnumerable<Patient> GetStaticPatients()
-    //{
-    //    return new List<Patient>
-    //    {
-    //        new Patient {  Name = "John Doe", Gender = "male",UserName="kkkk",Password="JHJJHIOIH" }
-    //    };
-    //}
-
-    //public void Add(Patient patient)
-    //{
-    //    //_context.Patients.Add(patient);
-    //    //_context.SaveChanges();
-    //}
-
-    //public void Delete(Patient patient)
-    //{
-    //    //_context.Patients.Remove(patient);
-    //}
-
-    //public Patient Find(Expression<Func<Patient, bool>> predicate, string[]? includes = null)
-    //{
-    //    //IQueryable<Patient> query = _context.Patients;
-    //    //if (query == null)
-    //    //    foreach (var include in includes)
-    //    //        query=query.Include(include);
-    //    //return query.SingleOrDefault(predicate);
-    //}
-
-    //public IEnumerable<Patient> GetAll()
-    //{
-    //    //return _context.Patients;
-    //}
-
     //public Patient GetById(Guid id)
     //{
-    //    //return _context.Patients.Find(id);
-    //}
-
-    //public void Update(Patient patient)
-    //{
-    //    //if (patient != null)
-    //    //{
-    //    //    _context.Update(patient);
-    //    //}
-    //    //_context.SaveChanges(true);
-
-    //}
-
-    //IEnumerable<Patient> IPatientRepository.GetAll()
-    //{
-    //    throw new NotImplementedException();
+    //    return _context.Patients.FirstOrDefault(e=>e.Id==id);
     //}
 }
