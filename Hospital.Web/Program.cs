@@ -1,16 +1,9 @@
-using Hospital.Application.Repositories;
 using Hospital.Domain.Repositories;
-using Hospital.Application.Contracts;
-using Hospital.Infrastructure;
 using Hospital.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using Microsoft.OpenApi.Models;
-using Hospital.Infrastructure;
-using NuGet.Protocol.Core.Types;
-using Octokit;
 using Hospital.Application.Patients;
 using Hospital.Application.Contracts.Patients;
+using Hospital.In.Repositories;
 
 namespace Hospital.Web
 {

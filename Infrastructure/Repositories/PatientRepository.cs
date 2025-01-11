@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hospital.Application.Repositories;
+namespace Hospital.In.Repositories;
 
 //[Authorize("Receptionst")]
 public class PatientRepository : IPatientRepository
