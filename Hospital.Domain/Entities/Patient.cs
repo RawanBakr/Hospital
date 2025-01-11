@@ -11,19 +11,11 @@ public class Patient
 {
     public Guid Id { get; set; }
 
-    [MaxLength(100)]
     public string Name { get; set; }
-
-    [MaxLength(100)]
     public string Gender { get; set; }
-
-    [MaxLength(100)]
     public string UserName { get; set; }
-
-    [MaxLength(100)]
     public string Password { get; set; }
 
     //public DateTime DateCreated { get; set; }
-
     public ICollection<Note>? Notes { get; set; }
 }

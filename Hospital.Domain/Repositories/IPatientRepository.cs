@@ -9,5 +9,5 @@ namespace Hospital.Domain.Repositories;
 
 public interface IPatientRepository : IRepository<Patient>
 {
-
+    //public Patient GetById(Guid id);
 }
