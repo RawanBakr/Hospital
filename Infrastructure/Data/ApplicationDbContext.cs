@@ -49,7 +49,10 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Receptionist>().HasData(
             new Receptionist() { Id=1, Emaill="reception11@gmail.com" });
+    }
 
-
+    public async Task<int> GetTotalPatientCountAsync()
+    {
+        return await Patients.CountAsync();
     }
 }

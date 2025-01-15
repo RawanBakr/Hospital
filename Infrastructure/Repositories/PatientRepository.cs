@@ -1,6 +1,9 @@
-﻿using Hospital.Domain.Entities;
+﻿using Hospital.Application.Contracts.Pagination;
+using Hospital.Application.Contracts.Patients;
+using Hospital.Domain.Entities;
 using Hospital.Domain.Repositories;
 using Hospital.Infrastructure.Data;
+using Hospital.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,7 +28,7 @@ public class PatientRepository : IPatientRepository
     public async Task AddAsync(Patient patient)
     {
         await _context.Patients.AddAsync(patient);
-         SaveAsync();
+        await SaveAsync();
     }
 
     public async Task DeleteAsync(int id)
@@ -38,17 +41,45 @@ public class PatientRepository : IPatientRepository
         }
     }
 
-    public async Task<IEnumerable<Patient>> GetAllAsync()
+    public async Task<IQueryable<Patient>> GetAllAsync()
     {
-        return await _context.Patients.OrderBy(e=>e.Name).ToListAsync();
+        return  _context.Patients.AsQueryable();
+    }
 
-        //IQueryable<Patient> queryable = _context.Patients.Include(e => new { e.Name, e.Gender }).OrderBy(e => e.Id);
-        //return await queryable.ToListAsync();
+    public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
+    {
+
+        int skip = (pageNumber - 1) * pageSize;
+        var query = _context.Patients.Select(e => new PatientDTO()
+        {
+            Name=e.Name,
+            Gender=e.Gender,
+            UserName=e.UserName
+        }).Skip(skip).Take(pageSize).AsQueryable();
+
+        int totalCount = await _context.GetTotalPatientCountAsync();
+
+        var patients = await query.ToListAsync();
+
+        var patientDTOs = patients.Select(p => new PatientDTO
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Gender= p.Gender,
+            UserName = p.UserName,
+        }).ToList();
+
+        return new PaginatedList<PatientDTO>(patientDTOs, pageNumber, pageSize, totalCount);
+    }
+
+    public async Task<int> GetTotalPatientCountAsync()
+    {
+        return await _context.Patients.CountAsync();
     }
 
     public async Task<Patient> GetByIdAsync(Guid id)
     {
-       return await _context.Patients.FindAsync(id);
+        return await _context.Patients.FindAsync(id);
     }
 
     public async Task UpdateAsync(Patient patient)
@@ -62,6 +93,26 @@ public class PatientRepository : IPatientRepository
         _context.SaveChanges();
         return Task.CompletedTask;
     }
+
+
+    //public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
+    //{
+    //    var query = await _context.;
+    //    int totalCount = await _patientRepository.GetTotalPatientCountAsync();
+
+    //    int skip = (pageNumber - 1) * pageSize;
+    //    var patients = await query.Skip(skip).Take(pageSize).ToListAsync();
+
+    //    var patientDTOs = patients.Select(p => new PatientDTO
+    //    {
+    //        Id = p.Id,
+    //        Name = p.Name,
+    //        Gender= p.Gender,
+    //        UserName = p.UserName,
+    //    }).ToList();
+
+    //    return new PaginatedList<PatientDTO>(patientDTOs, pageNumber, pageSize, totalCount);
+    //}
 
     //public Patient GetById(Guid id)
     //{

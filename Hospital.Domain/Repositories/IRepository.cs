@@ -10,7 +10,7 @@ namespace Hospital.Domain.Repositories;
 
 public interface IRepository<T> 
 {
-    Task<IEnumerable<T>> GetAllAsync();
+    Task<IQueryable<T>> GetAllAsync( );
     Task<T> GetByIdAsync(Guid id);
     Task AddAsync(T entity);
     Task UpdateAsync(T entity);
