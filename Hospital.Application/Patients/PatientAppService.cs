@@ -1,6 +1,8 @@
-﻿using Hospital.Application.Contracts.Patients;
+﻿using Hospital.Application.Contracts.Pagination;
+using Hospital.Application.Contracts.Patients;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Repositories;
+using Hospital.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -45,20 +47,6 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
         return patientDto;
     }
 
-    public async Task<IEnumerable<PatientDTO>> GetPatientList(PatientDTO patientDTO)
-    {
-        var patients = await _patientRepository.GetAllAsync();
-        var patientDto = patients.Select(patient => new PatientDTO
-        {
-            Name = patient.Name,
-            Gender = patient.Gender,
-            UserName = patient.UserName,
-            Password = patient.Password,
-        }).ToList();
-
-        return patientDto;
-    }
-
     public async Task UpdatePatient(Guid id, CreateUpdatePatientDTO updatePatient)
     {
         var patient = await _patientRepository.GetByIdAsync(id);
@@ -93,7 +81,30 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
             UserName = patient.UserName,
             Password = patient.Password
         };
-
         return patientDto;
     }
+
+    public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
+    {
+        return await _patientRepository.GetPaginatedPatientsAsync(pageNumber, pageSize);
+    }
+
+    //public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
+    //{
+    //    var query = await _patientRepository.GetAllAsync();
+    //    int totalCount = await _patientRepository.GetTotalPatientCountAsync();
+
+    //    int skip = (pageNumber - 1) * pageSize;
+    //    var patients = await query.Skip(skip).Take(pageSize).ToListAsync();
+
+    //    var patientDTOs = patients.Select(p => new PatientDTO
+    //    {
+    //        Id = p.Id,
+    //        Name = p.Name,
+    //        Gender= p.Gender,
+    //        UserName = p.UserName,
+    //    }).ToList();
+
+    //    return new PaginatedList<PatientDTO>(patientDTOs, pageNumber, pageSize, totalCount);
+    //}
 }

@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Hospital.Application.Patients;
 using Hospital.Application.Contracts.Patients;
 using Hospital.In.Repositories;
+using Hospital.Infrastructure.Repositories;
+using Hospital.Application.Contracts.Pagination;
 
 namespace Hospital.Web
 {

@@ -1,4 +1,5 @@
-﻿using Hospital.Application.Contracts.Patients;
+﻿using Hospital.Application.Contracts.Pagination;
+using Hospital.Application.Contracts.Patients;
 using Hospital.Application.Patients;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,14 @@ public class PatientController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(int pageNumber = 2, int pageSize = 10)
     {
-        var patientDTO = new PatientDTO();
-        var patientList = await _patientAppService.GetPatientList(patientDTO);
-        return View(patientList);
+        var paginatedPatients = await _patientAppService.GetPaginatedPatientsAsync(pageNumber, pageSize);
+        return View(paginatedPatients);
+
+        //var patientDTO = new PatientDTO();
+        //var patientList = await _patientAppService.GetPatientList(patientDTO);
+        //return View(patientList);
     }
 
     [HttpGet]
