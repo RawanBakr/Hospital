@@ -8,11 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Hospital.Infrastructure.Repositories;
+namespace Hospital.Application.Contracts.Interfaces;
 
 public interface IPatientRepository : IRepository<Patient>
 {
     Task<int> GetTotalPatientCountAsync();
     Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize);
-
 }

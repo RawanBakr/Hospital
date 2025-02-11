@@ -3,7 +3,6 @@ using Hospital.Application.Contracts.Patients;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Repositories;
 using Hospital.Infrastructure.Data;
-using Hospital.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Hospital.Application.Contracts.Interfaces;
 
 namespace Hospital.In.Repositories;
 
