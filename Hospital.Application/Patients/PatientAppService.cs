@@ -2,28 +2,19 @@
 using Hospital.Application.Contracts.Patients;
 using Hospital.Application.CustomExceptionMiddleware;
 using Hospital.Domain.Entities;
-using Hospital.Domain.Repositories;
-using Hospital.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using Hospital.Application.Contracts.Interfaces;
 
 namespace Hospital.Application.Patients;
 
 public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO>
 {
-    private readonly IPatientRepository _patientRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     private readonly IExceptionMiddlewareService _exceptionMiddlewareService;
 
-    public PatientAppService(IPatientRepository patientRepository, IExceptionMiddlewareService exceptionMiddlewareService)
+    public PatientAppService(IUnitOfWork unitOfWork, IExceptionMiddlewareService exceptionMiddlewareService)
     {
-        _patientRepository = patientRepository;
+        _unitOfWork = unitOfWork;
         _exceptionMiddlewareService = exceptionMiddlewareService;
     }
 
@@ -32,7 +23,7 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
 
         return await _exceptionMiddlewareService.ExecuteAsync(async () =>
         {
-            return await _patientRepository.GetPaginatedPatientsAsync(pageNumber, pageSize);
+            return await _unitOfWork.Patients.GetPaginatedPatientsAsync(pageNumber, pageSize);
         });
     }
 
@@ -50,8 +41,8 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
             };
 
             ExceptionMiddlewareService.ValidatePassword(patient.Password);
-            await _patientRepository.AddAsync(patient);
-            await _patientRepository.SaveAsync();
+            await _unitOfWork.Patients.AddAsync(patient);
+            await _unitOfWork.Patients.SaveAsync();
 
             var patientDto = new PatientDTO
             {
@@ -71,7 +62,7 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
 
         await _exceptionMiddlewareService.ExecuteAsync(async () =>
         {
-            var patient = await _patientRepository.GetByIdAsync(id);
+            var patient = await _unitOfWork.Patients.GetByIdAsync(id);
 
             if (patient == null)
             {
@@ -83,7 +74,7 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
             patient.UserName = updatePatient.UserName;
             patient.Password = updatePatient.Password;
 
-            await _patientRepository.UpdateAsync(patient);
+            await _unitOfWork.Patients.UpdateAsync(patient);
         });
     }
 
@@ -91,7 +82,7 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
     {
         return await _exceptionMiddlewareService.ExecuteAsync(async () =>
         {
-            var patient = await _patientRepository.GetByIdAsync(id);
+            var patient = await _unitOfWork.Patients.GetByIdAsync(id);
 
             if (patient == null)
             {
@@ -114,14 +105,14 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
     {
         await _exceptionMiddlewareService.ExecuteAsync(async () =>
         {
-            var patient = await _patientRepository.GetByIdAsync(id);
+            var patient = await _unitOfWork.Patients.GetByIdAsync(id);
 
             if (patient == null)
             {
                 throw new KeyNotFoundException("Patient not found.");
             }
-            await _patientRepository.DeleteAsync(patient);
-            await _patientRepository.SaveAsync();
+            await _unitOfWork.Patients.DeleteAsync(patient);
+            await _unitOfWork.Patients.SaveAsync();
         });
     }
 

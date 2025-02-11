@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Hospital.Application.Patients;
 using Hospital.Application.Contracts.Patients;
 using Hospital.In.Repositories;
-using Hospital.Infrastructure.Repositories;
+using Hospital.Application.Contracts.Interfaces;
 using Hospital.Application.Contracts.Pagination;
 using Hospital.Application.CustomExceptionMiddleware;
+using Hospital.Infrastructure.UnitOfWork;
 
 namespace Hospital.Web;
 
@@ -18,24 +19,20 @@ public class Program
 
         builder.Services.AddControllersWithViews();
 
-        //builder.Services.AddEndpointsApiExplorer();
-
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
             throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
         builder.Services.AddScoped<ApplicationDbContext>();
 
-        builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+        //builder.Services.AddScoped<IPatientRepository, PatientRepository>();
         builder.Services.AddScoped<IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO>, PatientAppService>();
-
         builder.Services.AddScoped<IExceptionMiddlewareService, ExceptionMiddlewareService>();
-
+        builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
         builder.Services.AddResponseCompression();
 
         var app = builder.Build();
-
 
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
