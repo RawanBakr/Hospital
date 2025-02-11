@@ -10,9 +10,9 @@ namespace Hospital.Application.Contracts.Patients;
 public class CreateUpdatePatientDTO
 {
     public Guid ID { get; set; }
-
+  
     [Required]
-    [MaxLength(100)]
+    [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
     public string Name { get; set; }
 
     [Required]

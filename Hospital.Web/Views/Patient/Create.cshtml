@@ -35,8 +35,32 @@
                         Submit
                     </button>
                 </div>
-
         </form>
     </div>
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Show success message
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    toastr.success('@TempData["SuccessMessage"]');
+            </text>
+        }
+
+            // Show error message
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    toastr.error('@TempData["ErrorMessage"]');
+            </text>
+        }
+        });
+    </script>
+}
