@@ -38,7 +38,6 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
 
     public async Task<PatientDTO> CreatePatient(CreateUpdatePatientDTO createPatient)
     {
-        TempDataAttribute[]
         return await _exceptionMiddlewareService.ExecuteAsync(async () =>
         {
             var patient = new Patient
@@ -92,7 +91,6 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
     {
         return await _exceptionMiddlewareService.ExecuteAsync(async () =>
         {
-
             var patient = await _patientRepository.GetByIdAsync(id);
 
             if (patient == null)
@@ -109,24 +107,22 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
                 Password = patient.Password
             };
             return patientDto;
-
         });
     }
 
     public async Task DeletePatient(Guid id)
     {
-      
-            await _exceptionMiddlewareService.ExecuteAsync(async () =>
+        await _exceptionMiddlewareService.ExecuteAsync(async () =>
+        {
+            var patient = await _patientRepository.GetByIdAsync(id);
+
+            if (patient == null)
             {
-                var patient = await _patientRepository.GetByIdAsync(id);
-
-                if (patient == null)
-                {
-                    throw new KeyNotFoundException("Patient not found.");
-                }
-                await _patientRepository.DeleteAsync(patient);
-                await _patientRepository.SaveAsync();
-            });
-
+                throw new KeyNotFoundException("Patient not found.");
+            }
+            await _patientRepository.DeleteAsync(patient);
+            await _patientRepository.SaveAsync();
+        });
     }
+
 }

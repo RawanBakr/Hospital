@@ -12,6 +12,7 @@ public class PatientController : Controller
 {
     private readonly IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> _patientAppService;
     private readonly IExceptionMiddlewareService _exceptionMiddlewareService;
+
     public PatientController(IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> patientAppService, IExceptionMiddlewareService exceptionMiddlewareService)
     {
         _patientAppService = patientAppService;
@@ -34,7 +35,6 @@ public class PatientController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateUpdatePatientDTO createPatientDto)
     {
-        
         try
         {
             var patientDto = await _patientAppService.CreatePatient(createPatientDto);
@@ -51,7 +51,6 @@ public class PatientController : Controller
         }
         catch (Exception ex)
         {
-            // Handle unexpected errors
             TempData["ErrorMessage"] = "An error occurred while creating the patient. Please try again.";
             return RedirectToAction(nameof(Create));
         }
@@ -67,7 +66,6 @@ public class PatientController : Controller
             return NotFound();
         }
 
-        // Map the patient entity to a DTO for the view
         var patientDto = new CreateUpdatePatientDTO
         {
             Name = patient.Name,
@@ -130,7 +128,6 @@ public class PatientController : Controller
         }
         catch (Exception ex)
         {
-            // Log the exception (if needed)
             return StatusCode(500, "An error occurred while deleting the patient.");
         }
     }
