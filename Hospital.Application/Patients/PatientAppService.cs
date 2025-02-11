@@ -1,12 +1,15 @@
 ﻿using Hospital.Application.Contracts.Pagination;
 using Hospital.Application.Contracts.Patients;
+using Hospital.Application.CustomExceptionMiddleware;
 using Hospital.Domain.Entities;
 using Hospital.Domain.Repositories;
 using Hospital.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,95 +19,114 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
 {
     private readonly IPatientRepository _patientRepository;
 
-    public PatientAppService(IPatientRepository patientRepository)
+    private readonly IExceptionMiddlewareService _exceptionMiddlewareService;
+
+    public PatientAppService(IPatientRepository patientRepository, IExceptionMiddlewareService exceptionMiddlewareService)
     {
         _patientRepository = patientRepository;
-    }
-
-    public async Task<PatientDTO> CreatePatient(CreateUpdatePatientDTO createPatient)
-    {
-        var patient = new Patient
-        {
-            Id=createPatient.ID,
-            Name = createPatient.Name,
-            Gender = createPatient.Gender,
-            UserName = createPatient.UserName,
-            Password = createPatient.Password
-        };
-
-        await _patientRepository.AddAsync(patient);
-        await _patientRepository.SaveAsync();
-
-        var patientDto = new PatientDTO
-        {
-            Id = patient.Id,
-            Name = patient.Name,
-            Gender = patient.Gender,
-            UserName = patient.UserName,
-            Password = patient.Password
-        };
-
-        return patientDto;
-    }
-
-    public async Task UpdatePatient(Guid id, CreateUpdatePatientDTO updatePatient)
-    {
-        var patient = await _patientRepository.GetByIdAsync(id);
-
-        if (patient == null)
-        {
-            throw new KeyNotFoundException("Patient not found.");
-        }
-
-        patient.Name = updatePatient.Name;
-        patient.Gender = updatePatient.Gender;
-        patient.UserName = updatePatient.UserName;
-        patient.Password = updatePatient.Password;
-
-        await _patientRepository.UpdateAsync(patient);
-    }
-
-    public async Task<PatientDTO> GetPatientId(Guid id)
-    {
-        var patient = await _patientRepository.GetByIdAsync(id);
-
-        if (patient == null)
-        {
-            return null;
-        }
-
-        var patientDto = new PatientDTO
-        {
-            Id = patient.Id,
-            Name = patient.Name,
-            Gender = patient.Gender,
-            UserName = patient.UserName,
-            Password = patient.Password
-        };
-        return patientDto;
+        _exceptionMiddlewareService = exceptionMiddlewareService;
     }
 
     public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
     {
-        return await _patientRepository.GetPaginatedPatientsAsync(pageNumber, pageSize);
+
+        return await _exceptionMiddlewareService.ExecuteAsync(async () =>
+        {
+            return await _patientRepository.GetPaginatedPatientsAsync(pageNumber, pageSize);
+        });
     }
 
-    //public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
-    //{
-    //    var query = await _patientRepository.GetAllAsync();
-    //    int totalCount = await _patientRepository.GetTotalPatientCountAsync();
+    public async Task<PatientDTO> CreatePatient(CreateUpdatePatientDTO createPatient)
+    {
+        TempDataAttribute[]
+        return await _exceptionMiddlewareService.ExecuteAsync(async () =>
+        {
+            var patient = new Patient
+            {
+                Id=createPatient.ID,
+                Name = createPatient.Name,
+                Gender = createPatient.Gender,
+                UserName = createPatient.UserName,
+                Password = createPatient.Password
+            };
 
-    //    int skip = (pageNumber - 1) * pageSize;
-    //    var patients = await query.Skip(skip).Take(pageSize).ToListAsync();
+            ExceptionMiddlewareService.ValidatePassword(patient.Password);
+            await _patientRepository.AddAsync(patient);
+            await _patientRepository.SaveAsync();
 
-    //    var patientDTOs = patients.Select(p => new PatientDTO
-    //    {
-    //        Id = p.Id,
-    //        Name = p.Name,
-    //        Gender= p.Gender,
-    //        UserName = p.UserName,
-    //    }).ToList();
+            var patientDto = new PatientDTO
+            {
+                Id = patient.Id,
+                Name = patient.Name,
+                Gender = patient.Gender,
+                UserName = patient.UserName,
+                Password = patient.Password
+            };
 
-    //    return new PaginatedList<PatientDTO>(patientDTOs, pageNumber, pageSize, totalCount);
-    //}
+            return patientDto;
+        });
+    }
+
+    public async Task UpdatePatient(Guid id, CreateUpdatePatientDTO updatePatient)
+    {
+
+        await _exceptionMiddlewareService.ExecuteAsync(async () =>
+        {
+            var patient = await _patientRepository.GetByIdAsync(id);
+
+            if (patient == null)
+            {
+                throw new KeyNotFoundException("Patient not found.");
+            }
+
+            patient.Name = updatePatient.Name;
+            patient.Gender = updatePatient.Gender;
+            patient.UserName = updatePatient.UserName;
+            patient.Password = updatePatient.Password;
+
+            await _patientRepository.UpdateAsync(patient);
+        });
+    }
+
+    public async Task<PatientDTO> GetPatientId(Guid id)
+    {
+        return await _exceptionMiddlewareService.ExecuteAsync(async () =>
+        {
+
+            var patient = await _patientRepository.GetByIdAsync(id);
+
+            if (patient == null)
+            {
+                throw new KeyNotFoundException("this patient ID not found in DB");
+            }
+
+            var patientDto = new PatientDTO
+            {
+                Id = patient.Id,
+                Name = patient.Name,
+                Gender = patient.Gender,
+                UserName = patient.UserName,
+                Password = patient.Password
+            };
+            return patientDto;
+
+        });
+    }
+
+    public async Task DeletePatient(Guid id)
+    {
+      
+            await _exceptionMiddlewareService.ExecuteAsync(async () =>
+            {
+                var patient = await _patientRepository.GetByIdAsync(id);
+
+                if (patient == null)
+                {
+                    throw new KeyNotFoundException("Patient not found.");
+                }
+                await _patientRepository.DeleteAsync(patient);
+                await _patientRepository.SaveAsync();
+            });
+
+    }
 }

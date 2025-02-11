@@ -1,28 +1,28 @@
 ﻿using Hospital.Application.Contracts.Pagination;
 using Hospital.Application.Contracts.Patients;
+using Hospital.Application.CustomExceptionMiddleware;
 using Hospital.Application.Patients;
+using Hospital.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Octokit;
 
 namespace Hospital.Web.Controllers;
 
 public class PatientController : Controller
 {
     private readonly IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> _patientAppService;
-
-    public PatientController(IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> patientAppService)
+    private readonly IExceptionMiddlewareService _exceptionMiddlewareService;
+    public PatientController(IPatientAppService<PatientDTO, Guid, CreateUpdatePatientDTO> patientAppService, IExceptionMiddlewareService exceptionMiddlewareService)
     {
         _patientAppService = patientAppService;
+        _exceptionMiddlewareService= exceptionMiddlewareService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(int pageNumber = 2, int pageSize = 10)
+    public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
     {
         var paginatedPatients = await _patientAppService.GetPaginatedPatientsAsync(pageNumber, pageSize);
         return View(paginatedPatients);
-
-        //var patientDTO = new PatientDTO();
-        //var patientList = await _patientAppService.GetPatientList(patientDTO);
-        //return View(patientList);
     }
 
     [HttpGet]
@@ -34,14 +34,27 @@ public class PatientController : Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateUpdatePatientDTO createPatientDto)
     {
-        if (!ModelState.IsValid)
+        
+        try
         {
-            return View(createPatientDto);
+            var patientDto = await _patientAppService.CreatePatient(createPatientDto);
+
+            ExceptionMiddlewareService.ValidatePassword(patientDto.Password);
+
+            TempData["SuccessMessage"] = "Patient created successfully!";
+            return RedirectToAction(nameof(Index));
         }
-
-        var patientDto = await _patientAppService.CreatePatient(createPatientDto);
-
-        return RedirectToAction("Index");
+        catch (ArgumentException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+            return RedirectToAction(nameof(Create));
+        }
+        catch (Exception ex)
+        {
+            // Handle unexpected errors
+            TempData["ErrorMessage"] = "An error occurred while creating the patient. Please try again.";
+            return RedirectToAction(nameof(Create));
+        }
     }
 
     [HttpGet]
@@ -92,5 +105,34 @@ public class PatientController : Controller
         return View(updatePatient);
     }
 
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var patient = await _patientAppService.GetPatientId(id);
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return View(patient);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(Guid id)
+    {
+        try
+        {
+            await _patientAppService.DeletePatient(id);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception (if needed)
+            return StatusCode(500, "An error occurred while deleting the patient.");
+        }
+    }
 
 }

@@ -31,14 +31,9 @@ public class PatientRepository : IPatientRepository
         await SaveAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Patient patient)
     {
-        var patient = await _context.Patients.FindAsync(id);
-        if (patient != null)
-        {
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
-        }
+          _context.Patients.Remove(patient);
     }
 
     public async Task<IQueryable<Patient>> GetAllAsync()
@@ -52,6 +47,7 @@ public class PatientRepository : IPatientRepository
         int skip = (pageNumber - 1) * pageSize;
         var query = _context.Patients.Select(e => new PatientDTO()
         {
+            Id=e.Id,
             Name=e.Name,
             Gender=e.Gender,
             UserName=e.UserName
@@ -79,7 +75,15 @@ public class PatientRepository : IPatientRepository
 
     public async Task<Patient> GetByIdAsync(Guid id)
     {
-        return await _context.Patients.FindAsync(id);
+        try
+        {
+            return await _context.Patients.FindAsync(id);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            throw new KeyNotFoundException("An error occurred while retrieving the patient.", ex);
+        }
     }
 
     public async Task UpdateAsync(Patient patient)
