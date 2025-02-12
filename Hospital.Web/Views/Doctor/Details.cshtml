@@ -1,0 +1,23 @@
+﻿@model Hospital.Application.Contracts.Doctors.DoctorDTO
+
+@{
+    ViewData["Title"] = "Doctor Details";
+}
+
+<div class="container mt-5">
+    <h4 class="mb-4">Doctor Details :</h4>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Name :</dt>
+                <dd class="col-sm-9 ">@Model.Name</dd>
+                <dt class="col-sm-3">Phone :</dt>
+                <dd class="col-sm-3">@Model.Phone</dd>
+            </dl>
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-info">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
