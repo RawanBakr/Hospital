@@ -12,7 +12,7 @@ public class CreateUpdatePatientDTO
     public Guid ID { get; set; }
   
     [Required]
-    [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
+    [StringLength(100, ErrorMessage = "Patient name cannot exceed 100 characters.")]
     public string Name { get; set; }
 
     [Required]

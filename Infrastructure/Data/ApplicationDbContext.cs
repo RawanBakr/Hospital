@@ -55,4 +55,9 @@ public class ApplicationDbContext : DbContext
     {
         return await Patients.CountAsync();
     }
+
+    public async Task<int> GetTotalDoctorCountAsync()
+    {
+        return await Doctors.CountAsync();
+    }
 }

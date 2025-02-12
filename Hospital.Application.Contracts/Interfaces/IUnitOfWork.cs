@@ -3,5 +3,6 @@
 public interface IUnitOfWork : IDisposable
 {
     IPatientRepository Patients { get; }
+    IDoctorRepository Doctors { get; }
     int Complete();
 }
