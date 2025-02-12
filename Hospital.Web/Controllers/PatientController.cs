@@ -132,4 +132,16 @@ public class PatientController : Controller
         }
     }
 
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var patient = await _patientAppService.GetPatientId(id);
+
+        if (patient == null)
+        {
+            return NotFound();
+        }
+
+        return View(patient);
+    }
+
 }
