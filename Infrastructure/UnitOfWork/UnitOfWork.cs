@@ -1,6 +1,8 @@
 ﻿using Hospital.Application.Contracts.Interfaces;
+using Hospital.Domain.Entities;
 using Hospital.In.Repositories;
 using Hospital.Infrastructure.Data;
+using Hospital.Infrastructure.Repositories;
 
 namespace Hospital.Infrastructure.UnitOfWork;
 
@@ -12,9 +14,11 @@ public class UnitOfWork :IUnitOfWork
     {
         _context = context;
         Patients= new PatientRepository(_context);
+        Doctors = new DoctorRepository(_context);
     }
 
     public IPatientRepository Patients { get; set; }
+    public IDoctorRepository Doctors { get; set; }
 
     public int Complete()
     {

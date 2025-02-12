@@ -8,6 +8,8 @@ using Hospital.Application.Contracts.Interfaces;
 using Hospital.Application.Contracts.Pagination;
 using Hospital.Application.CustomExceptionMiddleware;
 using Hospital.Infrastructure.UnitOfWork;
+using Hospital.Application.Doctors;
+using Hospital.Application.Contracts.Doctors;
 
 namespace Hospital.Web;
 
@@ -30,6 +32,7 @@ public class Program
         builder.Services.AddScoped<IExceptionMiddlewareService, ExceptionMiddlewareService>();
         builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
+        builder.Services.AddScoped<IDoctorAppService<DoctorDTO, Guid, CreateUpdateDoctorDTO>, DoctorAppServie>();
         builder.Services.AddResponseCompression();
 
         var app = builder.Build();
