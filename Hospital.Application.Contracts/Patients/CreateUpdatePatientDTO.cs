@@ -16,14 +16,14 @@ public class CreateUpdatePatientDTO
     public string Name { get; set; }
 
     [Required]
-    [MaxLength(100)]
+    [StringLength(100)]
     public string Gender { get; set; }
 
     [Required]
-    [MaxLength(100)]
+    [StringLength(100)]
     public string UserName { get; set; }
 
     [Required]
-    [MaxLength(100)]
+    [StringLength(100)]
     public string Password { get; set; }
 }

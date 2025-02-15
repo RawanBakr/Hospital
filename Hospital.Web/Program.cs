@@ -10,6 +10,8 @@ using Hospital.Application.CustomExceptionMiddleware;
 using Hospital.Infrastructure.UnitOfWork;
 using Hospital.Application.Doctors;
 using Hospital.Application.Contracts.Doctors;
+using Hospital.Application.Notes;
+using Hospital.Application.Contracts.Notes;
 
 namespace Hospital.Web;
 
@@ -33,6 +35,9 @@ public class Program
         builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
         builder.Services.AddScoped<IDoctorAppService<DoctorDTO, Guid, CreateUpdateDoctorDTO>, DoctorAppServie>();
+
+        builder.Services.AddScoped<INoteAppService<NoteDTO, Guid, CreateUpdateNoteDTO,PatientDTO>, NoteAppService>();
+
         builder.Services.AddResponseCompression();
 
         var app = builder.Build();

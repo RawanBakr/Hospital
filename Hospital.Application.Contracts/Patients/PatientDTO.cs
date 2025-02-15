@@ -11,15 +11,15 @@ public class PatientDTO
 {
     public Guid Id { get; set; }
 
-    [MaxLength(100)]
+    [StringLength(100)]
     public string Name { get; set; }
 
-    [MaxLength(100)]
+    [StringLength(100)]
     public string Gender { get; set; }
 
-    [MaxLength(100)]
+    [StringLength(100)]
     public string UserName { get; set; }
 
-    [MaxLength(100)]
+    [StringLength(100)]
     public string Password { get; set; }
 }

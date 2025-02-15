@@ -3,6 +3,7 @@ using Hospital.Application.Contracts.Patients;
 using Hospital.Application.CustomExceptionMiddleware;
 using Hospital.Domain.Entities;
 using Hospital.Application.Contracts.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hospital.Application.Patients;
 
@@ -16,6 +17,19 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
     {
         _unitOfWork = unitOfWork;
         _exceptionMiddlewareService = exceptionMiddlewareService;
+    }
+
+    public async Task<IQueryable<PatientDTO>> GetAllPatientsAsync()
+    {
+        var patientsQuery = _unitOfWork.Patients.GetPatientsAsync();
+
+        var patientDtosQuery = patientsQuery.Select(p => new PatientDTO
+        {
+            Id = p.Id,
+            Name = p.Name
+        }).AsQueryable();
+
+        return patientDtosQuery;
     }
 
     public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)
@@ -115,5 +129,4 @@ public class PatientAppService : IPatientAppService<PatientDTO, Guid, CreateUpda
             await _unitOfWork.Patients.SaveAsync();
         });
     }
-
 }

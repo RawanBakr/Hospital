@@ -60,4 +60,8 @@ public class ApplicationDbContext : DbContext
     {
         return await Doctors.CountAsync();
     }
+    public async Task<int> GetTotalNotesCountAsync()
+    {
+        return await Notes.CountAsync();
+    }
 }

@@ -12,6 +12,8 @@ namespace Hospital.Application.Contracts.Interfaces;
 
 public interface IPatientRepository : IRepository<Patient>
 {
+    IQueryable<Patient> GetPatientsAsync();
+    Task<IQueryable<PatientDTO>> GetAllPatientsAsync();
     Task<int> GetTotalPatientCountAsync();
     Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize);
 }
