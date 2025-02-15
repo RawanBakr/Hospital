@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Hospital.Application.Contracts.Interfaces;
+using Hospital.Infrastructure.UnitOfWork;
 
 namespace Hospital.In.Repositories;
 
@@ -33,12 +34,47 @@ public class PatientRepository : IPatientRepository
 
     public async Task DeleteAsync(Patient patient)
     {
-          _context.Patients.Remove(patient);
+        _context.Patients.Remove(patient);
+    }
+
+    public IQueryable<Patient> GetPatientsAsync()
+    {
+        return _context.Patients.AsQueryable();
+    }
+
+    public async Task<IQueryable<PatientDTO>> GetAllPatientsAsync()
+    {
+        var query = _context.Patients.Select(p => new PatientDTO
+        {
+            Id = p.Id,
+            Name = p.Name
+        }).AsQueryable();
+
+        return query;
+
+        //var patients = await query.ToListAsync();
+
+        //var patientDTOs = patients.Select(p => new PatientDTO
+        //{
+        //    Id= p.Id,
+        //    Name= p.Name
+        //}).ToList();
+
+        //return patientDTOs;
+
+        //var patients = await _context.Patients
+        //.Select(p => new PatientDTO
+        //{
+        //    Id = p.Id,
+        //    Name = p.Name
+        //})
+        //.ToListAsync();
+
     }
 
     public async Task<IQueryable<Patient>> GetAllAsync()
     {
-        return  _context.Patients.AsQueryable();
+        return _context.Patients.AsQueryable();
     }
 
     public async Task<PaginatedList<PatientDTO>> GetPaginatedPatientsAsync(int pageNumber, int pageSize)

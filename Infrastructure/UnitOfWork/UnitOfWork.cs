@@ -6,7 +6,7 @@ using Hospital.Infrastructure.Repositories;
 
 namespace Hospital.Infrastructure.UnitOfWork;
 
-public class UnitOfWork :IUnitOfWork
+public class UnitOfWork :IUnitOfWork 
 {
     private readonly ApplicationDbContext _context;
     
@@ -15,10 +15,12 @@ public class UnitOfWork :IUnitOfWork
         _context = context;
         Patients= new PatientRepository(_context);
         Doctors = new DoctorRepository(_context);
+        Notes =new NoteRepository(_context);
     }
 
     public IPatientRepository Patients { get; set; }
     public IDoctorRepository Doctors { get; set; }
+    public INoteRepository Notes { get; set; }
 
     public int Complete()
     {
@@ -29,4 +31,9 @@ public class UnitOfWork :IUnitOfWork
     {
         _context.Dispose();
     }
+
+    //public void Dispose()
+    //{
+    //    _context.Dispose();
+    //}
 }
